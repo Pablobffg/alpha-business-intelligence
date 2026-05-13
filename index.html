@@ -91,7 +91,7 @@
 </div>
   <button class="btn" onclick="cargarDatos()">↻ Actualizar datos</button>
 
-  <div class="footer">Conectado a http://127.0.0.1:5000</div>
+ <div class="footer">Conectado a https://alpha-business-intelligence.onrender.com</div>
 
 <script>
   async function registrarVenta() {
@@ -172,7 +172,7 @@ async function cargarDatos() {
       document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
 
       renderChart(prediccion.simulacion_5_periodos)
-
+      cargarHistorial()
     } catch (e) {
       console.error('Error conectando a la API:', e)
     }
