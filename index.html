@@ -75,9 +75,9 @@
   async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([
-        fetch('http://127.0.0.1:5000/reporte').then(r => r.json()),
-        fetch('http://127.0.0.1:5000/prediccion').then(r => r.json()),
-        fetch('http://127.0.0.1:5000/metricas').then(r => r.json())
+        fetch('https://alpha-business-intelligence.onrender.com/reporte').then(r => r.json()),
+        fetch('https://alpha-business-intelligence.onrender.com/prediccion').then(r => r.json()),
+        fetch('https://alpha-business-intelligence.onrender.com/metricas').then(r => r.json())
       ])
 
       document.getElementById('ventas-totales').textContent = reporte.ventas_totales.toLocaleString()
