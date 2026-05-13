@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Business Intelligence — Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 16px; padding: 40px; width: 100%; max-width: 380px; }
+    h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; color: #fff; }
+    .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
+    label { font-size: 12px; color: #888; display: block; margin-bottom: 6px; }
+    input { width: 100%; background: #111; border: 0.5px solid #333; border-radius: 8px; color: #fff; font-size: 14px; padding: 10px 14px; outline: none; margin-bottom: 16px; }
+    input:focus { border-color: #555; }
+    .btn { width: 100%; background: #fff; color: #000; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; padding: 11px; cursor: pointer; margin-bottom: 12px; }
+    .btn:hover { background: #e5e5e5; }
+    .btn-secondary { width: 100%; background: transparent; color: #aaa; border: 0.5px solid #333; border-radius: 8px; font-size: 14px; padding: 11px; cursor: pointer; }
+    .btn-secondary:hover { background: #222; color: #fff; }
+    .msg { font-size: 12px; text-align: center; margin-top: 12px; min-height: 18px; }
+    .msg.error { color: #f87171; }
+    .msg.success { color: #4ade80; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 0.5px solid #2a2a2a; color: #666; }
+    .tab.active { background: #222; color: #fff; border-color: #444; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Alpha Business Intelligence</h1>
+  <p class="subtitle">Accede a tu dashboard empresarial</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="setTab('login')">Iniciar sesión</div>
+    <div class="tab" onclick="setTab('registro')">Registrarse</div>
+  </div>
+
+  <div id="form-login">
+    <label>Usuario</label>
+    <input id="login-user" type="text" placeholder="Tu usuario" />
+    <label>Contraseña</label>
+    <input id="login-pass" type="password" placeholder="Tu contraseña" />
+    <button class="btn" onclick="iniciarSesion()">Entrar</button>
+  </div>
+
+  <div id="form-registro" style="display:none">
+    <label>Usuario</label>
+    <input id="reg-user" type="text" placeholder="Elige un usuario" />
+    <label>Contraseña</label>
+    <input id="reg-pass" type="password" placeholder="Elige una contraseña" />
+    <button class="btn" onclick="registrarse()">Crear cuenta</button>
+  </div>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+  const API = 'https://alpha-business-intelligence.onrender.com'
+
+  function setTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'registro' && i === 1))
+    })
+    document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none'
+    document.getElementById('form-registro').style.display = tab === 'registro' ? 'block' : 'none'
+    document.getElementById('msg').textContent = ''
+  }
+
+  async function iniciarSesion() {
+    const usuario = document.getElementById('login-user').value
+    const password = document.getElementById('login-pass').value
+    const msg = document.getElementById('msg')
+
+    if (!usuario || !password) {
+      msg.textContent = 'Completa todos los campos'
+      msg.className = 'msg error'
+      return
+    }
+
+    try {
+      const res = await fetch(`${API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ usuario, password })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        msg.textContent = '✓ Entrando...'
+        msg.className = 'msg success'
+        setTimeout(() => window.location.href = 'index.html', 1000)
+      } else {
+        msg.textContent = data.error
+        msg.className = 'msg error'
+      }
+    } catch (e) {
+      msg.textContent = 'Error de conexión'
+      msg.className = 'msg error'
+    }
+  }
+
+  async function registrarse() {
+    const usuario = document.getElementById('reg-user').value
+    const password = document.getElementById('reg-pass').value
+    const msg = document.getElementById('msg')
+
+    if (!usuario || !password) {
+      msg.textContent = 'Completa todos los campos'
+      msg.className = 'msg error'
+      return
+    }
+
+    try {
+      const res = await fetch(`${API}/registro`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario, password })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        msg.textContent = '✓ Cuenta creada, inicia sesión'
+        msg.className = 'msg success'
+        setTimeout(() => setTab('login'), 1500)
+      } else {
+        msg.textContent = data.error
+        msg.className = 'msg error'
+      }
+    } catch (e) {
+      msg.textContent = 'Error de conexión'
+      msg.className = 'msg error'
+    }
+  }
+</script>
+</body>
+</html>
