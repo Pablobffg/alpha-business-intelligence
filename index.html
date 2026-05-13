@@ -66,13 +66,59 @@
     <div class="chart-title">Simulación — próximos 5 períodos</div>
     <canvas id="chart-prediccion" height="120"></canvas>
   </div>
-
+<div class="chart-card" style="margin-bottom: 14px;">
+  <div class="chart-title">Registrar nueva venta</div>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <input id="input-venta" type="number" placeholder="Ej: 350" style="
+      background: #111;
+      border: 0.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      padding: 8px 14px;
+      outline: none;
+      width: 180px;
+    "/>
+    <button class="btn" onclick="registrarVenta()" style="color: #4ade80; border-color: #4ade80;">
+      + Registrar venta
+    </button>
+    <span id="msg-venta" style="font-size: 12px; color: #666;"></span>
+  </div>
+</div>
   <button class="btn" onclick="cargarDatos()">↻ Actualizar datos</button>
 
   <div class="footer">Conectado a http://127.0.0.1:5000</div>
 
 <script>
-  async function cargarDatos() {
+  async function registrarVenta() {
+  const cantidad = document.getElementById('input-venta').value
+  const msg = document.getElementById('msg-venta')
+
+  if (!cantidad || cantidad <= 0) {
+    msg.textContent = 'Ingresa una cantidad válida'
+    msg.style.color = '#f87171'
+    return
+  }
+
+  try {
+    const res = await fetch('https://alpha-business-intelligence.onrender.com/venta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cantidad: parseInt(cantidad) })
+    })
+    const data = await res.json()
+    msg.textContent = '✓ Venta registrada'
+    msg.style.color = '#4ade80'
+    document.getElementById('input-venta').value = ''
+    setTimeout(() => cargarDatos(), 1000)
+  } catch (e) {
+    msg.textContent = 'Error al registrar'
+    msg.style.color = '#f87171'
+  }
+}
+
+
+async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([
         fetch('https://alpha-business-intelligence.onrender.com/reporte').then(r => r.json()),
