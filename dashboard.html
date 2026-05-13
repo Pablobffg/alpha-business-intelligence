@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Business Intelligence</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; color: #fff; }
+    .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 18px; }
+    .card-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .card-value { font-size: 26px; font-weight: 500; color: #fff; }
+    .card-value.green { color: #4ade80; }
+    .card-value.amber { color: #fbbf24; }
+    .card-value.blue { color: #60a5fa; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 6px; background: #2a2a2a; color: #aaa; }
+    .chart-card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+    .chart-title { font-size: 13px; color: #888; margin-bottom: 16px; }
+    .estrategia { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .estrategia-icon { width: 40px; height: 40px; border-radius: 10px; background: #fbbf2420; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .estrategia-label { font-size: 12px; color: #666; }
+    .estrategia-value { font-size: 15px; font-weight: 500; color: #fbbf24; margin-top: 2px; }
+    .btn { background: #1a1a1a; border: 0.5px solid #333; border-radius: 8px; color: #aaa; font-size: 13px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #222; color: #fff; }
+    .footer { font-size: 12px; color: #444; margin-top: 24px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <h1>Alpha Business Intelligence</h1>
+  <p class="subtitle">Dashboard en tiempo real — conectado a tu API local</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Ventas totales</div>
+      <div class="card-value green" id="ventas-totales">—</div>
+      <div class="badge" id="registros">— registros</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Promedio por venta</div>
+      <div class="card-value blue" id="promedio">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Ganancias totales</div>
+      <div class="card-value green" id="ganancias">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Próxima venta estimada</div>
+      <div class="card-value amber" id="proxima-venta">—</div>
+    </div>
+  </div>
+
+  <div class="estrategia">
+    <div class="estrategia-icon">🧠</div>
+    <div>
+      <div class="estrategia-label">Estrategia recomendada por IA</div>
+      <div class="estrategia-value" id="estrategia">Cargando...</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Simulación — próximos 5 períodos</div>
+    <canvas id="chart-prediccion" height="120"></canvas>
+  </div>
+
+  <button class="btn" onclick="cargarDatos()">↻ Actualizar datos</button>
+
+  <div class="footer">Conectado a http://127.0.0.1:5000</div>
+
+<script>
+  async function cargarDatos() {
+    try {
+      const [reporte, prediccion, metricas] = await Promise.all([
+        fetch('http://127.0.0.1:5000/reporte').then(r => r.json()),
+        fetch('http://127.0.0.1:5000/prediccion').then(r => r.json()),
+        fetch('http://127.0.0.1:5000/metricas').then(r => r.json())
+      ])
+
+      document.getElementById('ventas-totales').textContent = reporte.ventas_totales.toLocaleString()
+      document.getElementById('promedio').textContent = reporte.promedio.toFixed(2)
+      document.getElementById('ganancias').textContent = metricas.ganancias_total.toLocaleString()
+      document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
+      document.getElementById('proxima-venta').textContent = prediccion.proxima_venta
+      document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
+
+      renderChart(prediccion.simulacion_5_periodos)
+
+    } catch (e) {
+      console.error('Error conectando a la API:', e)
+    }
+  }
+
+  function renderChart(datos) {
+    const ctx = document.getElementById('chart-prediccion').getContext('2d')
+    if (window._chart) window._chart.destroy()
+    window._chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['P1', 'P2', 'P3', 'P4', 'P5'],
+        datasets: [{
+          label: 'Venta estimada',
+          data: datos,
+          borderColor: '#fbbf24',
+          backgroundColor: '#fbbf2415',
+          borderWidth: 2,
+          pointBackgroundColor: '#fbbf24',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#666' }, grid: { color: '#222' } },
+          y: { ticks: { color: '#666' }, grid: { color: '#222' } }
+        }
+      }
+    })
+  }
+
+  cargarDatos()
+</script>
+</body>
+</html>

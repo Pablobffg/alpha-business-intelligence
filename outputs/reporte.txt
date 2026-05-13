@@ -1,0 +1,2 @@
+Total ventas: 1000
+Promedio ventas: 200.0
