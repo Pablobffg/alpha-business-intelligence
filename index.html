@@ -66,6 +66,10 @@
     <div class="chart-title">Simulación — próximos 5 períodos</div>
     <canvas id="chart-prediccion" height="120"></canvas>
   </div>
+  <div class="chart-card" style="margin-bottom: 14px;">
+  <div class="chart-title">Historial de ventas reales</div>
+  <canvas id="chart-historial" height="120"></canvas>
+</div>
 <div class="chart-card" style="margin-bottom: 14px;">
   <div class="chart-title">Registrar nueva venta</div>
   <div style="display: flex; gap: 10px; align-items: center;">
@@ -117,7 +121,41 @@
   }
 }
 
+async function cargarHistorial() {
+  try {
+    const res = await fetch('https://alpha-business-intelligence.onrender.com/historial')
+    const data = await res.json()
+    const ventas = data.ventas
+    const labels = ventas.map((_, i) => `V${i + 1}`)
 
+    const ctx = document.getElementById('chart-historial').getContext('2d')
+    if (window._chartHistorial) window._chartHistorial.destroy()
+    window._chartHistorial = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Ventas reales',
+          data: ventas,
+          backgroundColor: '#60a5fa40',
+          borderColor: '#60a5fa',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#666', maxTicksLimit: 10 }, grid: { color: '#222' } },
+          y: { ticks: { color: '#666' }, grid: { color: '#222' } }
+        }
+      }
+    })
+  } catch (e) {
+    console.error('Error cargando historial:', e)
+  }
+}
 async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([

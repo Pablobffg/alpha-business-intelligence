@@ -56,6 +56,13 @@ def metricas():
         "cantidad_registros": len(datos["ventas"])
     })
 
-
+@app.route("/historial", methods=["GET"])
+def historial():
+    datos = cargar_datos()
+    ventas = datos["ventas"]
+    return jsonify({
+        "ventas": ventas,
+        "total_registros": len(ventas)
+    })
 if __name__ == "__main__":
     app.run(debug=True)
