@@ -162,6 +162,16 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
     <div class="page-title">Dashboard</div>
     <div class="page-subtitle">Resumen general en tiempo real</div>
 
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px; background:#111; border:0.5px solid #1a1a1a; border-radius:14px; padding:14px 18px; flex-wrap:wrap;">
+      <span style="font-size:11px; color:#444; text-transform:uppercase; letter-spacing:0.5px;">Período</span>
+      <input type="date" id="fecha-desde" class="input-field" style="width:150px;"/>
+      <span style="font-size:12px; color:#333;">→</span>
+      <input type="date" id="fecha-hasta" class="input-field" style="width:150px;"/>
+      <button class="btn-green" onclick="aplicarFiltro()">Aplicar</button>
+      <button class="btn-gray" onclick="limpiarFiltro()">↺ Todo</button>
+      <span id="msg-filtro" style="font-size:12px; color:#555;"></span>
+    </div>
+
     <div class="grid">
       <div class="card">
         <div class="card-label">Ventas totales</div>
@@ -399,7 +409,22 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
       })
     } catch (e) { console.error(e) }
   }
+function aplicarFiltro() {
+  const desde = document.getElementById('fecha-desde').value
+  const hasta = document.getElementById('fecha-hasta').value
+  const msg = document.getElementById('msg-filtro')
+  if (!desde || !hasta) { msg.textContent = 'Selecciona ambas fechas'; return }
+  msg.textContent = `Mostrando: ${desde} → ${hasta}`
+  msg.style.color = '#4ade80'
+  cargarDatos()
+}
 
+function limpiarFiltro() {
+  document.getElementById('fecha-desde').value = ''
+  document.getElementById('fecha-hasta').value = ''
+  document.getElementById('msg-filtro').textContent = ''
+  cargarDatos()
+}
   async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([

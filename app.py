@@ -126,6 +126,28 @@ def historial():
         "total_registros": len(ventas)
     })
 
-
+@app.route("/historial/filtrado", methods=["GET"])
+def historial_filtrado():
+    desde = request.args.get("desde", None)
+    hasta = request.args.get("hasta", None)
+    datos = cargar_datos()
+    ventas = datos["ventas"]
+    
+    # Por ahora filtramos por índice simulando fechas
+    total = len(ventas)
+    if desde and hasta:
+        try:
+            inicio = int(desde)
+            fin = int(hasta)
+            ventas = ventas[inicio:fin]
+        except:
+            pass
+    
+    return jsonify({
+        "ventas": ventas,
+        "total": sum(ventas),
+        "promedio": round(sum(ventas)/len(ventas), 2) if ventas else 0,
+        "total_registros": len(ventas)
+    })
 if __name__ == "__main__":
     app.run(debug=True)
