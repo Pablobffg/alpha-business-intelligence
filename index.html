@@ -32,7 +32,10 @@
 <body>
 
   <h1>Alpha Business Intelligence</h1>
-  <p class="subtitle">Dashboard en tiempo real — conectado a tu API local</p>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+  <p class="subtitle" id="bienvenida">Dashboard en tiempo real</p>
+  <button class="btn" onclick="cerrarSesion()" style="font-size: 12px; padding: 6px 14px;">Cerrar sesión</button>
+</div>
 
   <div class="grid">
     <div class="card">
@@ -205,6 +208,18 @@ async function cargarDatos() {
         }
       }
     })
+  }
+
+ const usuario = localStorage.getItem('usuario')
+  if (!usuario) {
+    window.location.href = 'login.html'
+  }
+
+  document.getElementById('bienvenida').textContent = `Bienvenido, ${usuario} 👋`
+
+  function cerrarSesion() {
+    localStorage.removeItem('usuario')
+    window.location.href = 'login.html'
   }
 
   cargarDatos()
