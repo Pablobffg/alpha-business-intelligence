@@ -5,24 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alpha Business Intelligence — Login</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 16px; padding: 40px; width: 100%; max-width: 380px; }
-    h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; color: #fff; }
-    .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
-    label { font-size: 12px; color: #888; display: block; margin-bottom: 6px; }
-    input { width: 100%; background: #111; border: 0.5px solid #333; border-radius: 8px; color: #fff; font-size: 14px; padding: 10px 14px; outline: none; margin-bottom: 16px; }
-    input:focus { border-color: #555; }
-    .btn { width: 100%; background: #fff; color: #000; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; padding: 11px; cursor: pointer; margin-bottom: 12px; }
-    .btn:hover { background: #e5e5e5; }
-    .btn-secondary { width: 100%; background: transparent; color: #aaa; border: 0.5px solid #333; border-radius: 8px; font-size: 14px; padding: 11px; cursor: pointer; }
-    .btn-secondary:hover { background: #222; color: #fff; }
-    .msg { font-size: 12px; text-align: center; margin-top: 12px; min-height: 18px; }
-    .msg.error { color: #f87171; }
-    .msg.success { color: #4ade80; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-    .tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 0.5px solid #2a2a2a; color: #666; }
-    .tab.active { background: #222; color: #fff; border-color: #444; }
+   * { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.card { background: #111; border: 0.5px solid #1f1f1f; border-radius: 20px; padding: 44px; width: 100%; max-width: 400px; box-shadow: 0 0 40px #4ade8008; }
+h1 { font-size: 22px; font-weight: 500; color: #fff; }
+.subtitle { font-size: 13px; color: #555; margin-bottom: 28px; margin-top: 4px; }
+label { font-size: 12px; color: #666; display: block; margin-bottom: 6px; }
+input { width: 100%; background: #0f0f0f; border: 0.5px solid #2a2a2a; border-radius: 10px; color: #fff; font-size: 14px; padding: 12px 14px; outline: none; margin-bottom: 14px; transition: border 0.2s; }
+input:focus { border-color: #4ade80; }
+.btn { width: 100%; background: #4ade80; color: #000; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; padding: 12px; cursor: pointer; margin-bottom: 12px; transition: background 0.2s; }
+.btn:hover { background: #22c55e; }
+.btn-secondary { width: 100%; background: transparent; color: #555; border: 0.5px solid #222; border-radius: 10px; font-size: 14px; padding: 12px; cursor: pointer; transition: all 0.2s; }
+.btn-secondary:hover { background: #1a1a1a; color: #fff; }
+.msg { font-size: 12px; text-align: center; margin-top: 12px; min-height: 18px; }
+.msg.error { color: #f87171; }
+.msg.success { color: #4ade80; }
+.tabs { display: flex; gap: 6px; margin-bottom: 24px; background: #0f0f0f; padding: 4px; border-radius: 10px; border: 0.5px solid #1f1f1f; }
+.tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px; cursor: pointer; color: #555; transition: all 0.2s; }
+.tab.active { background: #1a1a1a; color: #fff; border: 0.5px solid #2a2a2a; }
   </style>
 </head>
 <body>
