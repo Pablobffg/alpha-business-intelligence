@@ -3,218 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alpha Business Intelligence</title>
+  <title>Wistex AI — Business Intelligence</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
-@media (max-width: 600px) {
-  body { padding: 14px; }
-  h1 { font-size: 18px; }
-  .card-value { font-size: 20px; }
-  .grid { grid-template-columns: 1fr 1fr; }
-  .estrategia { flex-direction: column; gap: 8px; }
-  .btn { width: 100%; }
-}
-    h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; color: #fff; }
-    .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
-    .card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 18px; }
-    .card-label { font-size: 12px; color: #666; margin-bottom: 8px; }
-    .card-value { font-size: 26px; font-weight: 500; color: #fff; }
+    body { background: #080808; color: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; padding: 28px; min-height: 100vh; }
+
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-text h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
+    .brand-text h1 span { color: #4ade80; }
+    .brand-text p { font-size: 11px; letter-spacing: 2.5px; color: #4ade80; opacity: 0.5; margin-top: 2px; }
+    .user-badge { display: flex; align-items: center; gap: 10px; background: #111; border: 0.5px solid #1e1e1e; border-radius: 50px; padding: 8px 16px 8px 8px; }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; background: #4ade8022; border: 1px solid #4ade8044; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #4ade80; font-weight: 600; }
+    .user-name { font-size: 13px; color: #aaa; }
+    .btn-logout { background: none; border: none; color: #555; font-size: 12px; cursor: pointer; padding: 0; margin-left: 4px; }
+    .btn-logout:hover { color: #f87171; }
+
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; transition: border 0.2s; }
+    .card:hover { border-color: #2a2a2a; }
+    .card-label { font-size: 12px; color: #555; margin-bottom: 12px; letter-spacing: 0.3px; }
+    .card-value { font-size: 28px; font-weight: 600; letter-spacing: -1px; color: #fff; }
     .card-value.green { color: #4ade80; }
     .card-value.amber { color: #fbbf24; }
     .card-value.blue { color: #60a5fa; }
-    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 6px; background: #2a2a2a; color: #aaa; }
-    .chart-card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
-    .chart-title { font-size: 13px; color: #888; margin-bottom: 16px; }
-    .estrategia { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-    .estrategia-icon { width: 40px; height: 40px; border-radius: 10px; background: #fbbf2420; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .estrategia-label { font-size: 12px; color: #666; }
-    .estrategia-value { font-size: 15px; font-weight: 500; color: #fbbf24; margin-top: 2px; }
-    .btn { background: #1a1a1a; border: 0.5px solid #333; border-radius: 8px; color: #aaa; font-size: 13px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
-    .btn:hover { background: #222; color: #fff; }
-    .footer { font-size: 12px; color: #444; margin-top: 24px; text-align: center; }
+    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 8px; background: #1a1a1a; color: #555; border: 0.5px solid #222; }
+
+    .strategy-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .strategy-icon { width: 44px; height: 44px; border-radius: 14px; background: #4ade8012; border: 0.5px solid #4ade8030; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .strategy-label { font-size: 11px; color: #555; letter-spacing: 0.5px; text-transform: uppercase; }
+    .strategy-value { font-size: 16px; font-weight: 500; color: #4ade80; margin-top: 3px; letter-spacing: -0.3px; }
+
+    .chart-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; margin-bottom: 16px; }
+    .chart-title { font-size: 12px; color: #555; margin-bottom: 18px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+    .form-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; margin-bottom: 16px; }
+    .form-row { display: flex; gap: 10px; align-items: center; }
+    .input-venta { background: #0a0a0a; border: 0.5px solid #222; border-radius: 12px; color: #fff; font-size: 14px; padding: 10px 16px; outline: none; width: 160px; font-family: inherit; transition: border 0.2s; }
+    .input-venta:focus { border-color: #4ade80; }
+    .btn-register { background: #4ade8015; color: #4ade80; border: 0.5px solid #4ade8040; border-radius: 12px; font-size: 13px; padding: 10px 18px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-register:hover { background: #4ade8025; }
+    .msg-venta { font-size: 12px; color: #555; }
+
+    .btn-refresh { background: #111; border: 0.5px solid #1e1e1e; border-radius: 12px; color: #555; font-size: 13px; padding: 10px 18px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-refresh:hover { background: #1a1a1a; color: #fff; }
+
+    .footer { font-size: 11px; color: #2a2a2a; margin-top: 28px; text-align: center; letter-spacing: 0.5px; }
+
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .header { flex-direction: column; gap: 16px; }
+    }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <div style="display:flex; align-items:center; gap:14px; margin-bottom:6px;">
-  <svg width="42" height="42" viewBox="0 0 52 52" style="flex-shrink:0;">
-    <rect x="0" y="0" width="52" height="52" rx="14" fill="#0f0f0f" stroke="#4ade80" stroke-width="1.5"/>
-    <rect x="10" y="22" width="6" height="20" rx="3" fill="#4ade80" opacity="0.5"/>
-    <rect x="20" y="14" width="6" height="28" rx="3" fill="#4ade80"/>
-    <rect x="30" y="18" width="6" height="24" rx="3" fill="#4ade80" opacity="0.75"/>
-    <rect x="40" y="10" width="6" height="32" rx="3" fill="#4ade80" opacity="0.6"/>
-    <circle cx="43" cy="8" r="4" fill="#4ade80"/>
-  </svg>
+<div class="header">
+  <div class="brand">
+    <svg width="44" height="44" viewBox="0 0 52 52">
+      <rect x="0" y="0" width="52" height="52" rx="14" fill="#0f0f0f" stroke="#4ade80" stroke-width="1.5"/>
+      <rect x="10" y="22" width="6" height="20" rx="3" fill="#4ade80" opacity="0.5"/>
+      <rect x="20" y="14" width="6" height="28" rx="3" fill="#4ade80"/>
+      <rect x="30" y="18" width="6" height="24" rx="3" fill="#4ade80" opacity="0.75"/>
+      <rect x="40" y="10" width="6" height="32" rx="3" fill="#4ade80" opacity="0.6"/>
+      <circle cx="43" cy="8" r="4" fill="#4ade80"/>
+    </svg>
+    <div class="brand-text">
+      <h1><span>Wistex</span> AI</h1>
+      <p>BUSINESS INTELLIGENCE</p>
+    </div>
+  </div>
+  <div class="user-badge">
+    <div class="avatar" id="avatar-inicial">W</div>
+    <span class="user-name" id="user-name">Cargando...</span>
+    <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-label">Ventas totales</div>
+    <div class="card-value green" id="ventas-totales">—</div>
+    <div class="badge" id="registros">— registros</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Promedio por venta</div>
+    <div class="card-value blue" id="promedio">—</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Ganancias totales</div>
+    <div class="card-value green" id="ganancias">—</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Próxima venta estimada</div>
+    <div class="card-value amber" id="proxima-venta">—</div>
+  </div>
+</div>
+
+<div class="strategy-card">
+  <div class="strategy-icon">🧠</div>
   <div>
-    <h1 style="margin-bottom:0;"><span style="color:#4ade80;">Wistex</span> AI</h1>
-    <span style="font-size:11px; letter-spacing:2px; color:#4ade80; opacity:0.5;">BUSINESS INTELLIGENCE</span>
+    <div class="strategy-label">Estrategia recomendada por IA</div>
+    <div class="strategy-value" id="estrategia">Analizando...</div>
   </div>
 </div>
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
-  <p class="subtitle" id="bienvenida">Dashboard en tiempo real</p>
-  <button class="btn" onclick="cerrarSesion()" style="font-size: 12px; padding: 6px 14px;">Cerrar sesión</button>
+
+<div class="chart-card">
+  <div class="chart-title">Simulación — próximos 5 períodos</div>
+  <canvas id="chart-prediccion" height="110"></canvas>
 </div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="card-label">Ventas totales</div>
-      <div class="card-value green" id="ventas-totales">—</div>
-      <div class="badge" id="registros">— registros</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Promedio por venta</div>
-      <div class="card-value blue" id="promedio">—</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Ganancias totales</div>
-      <div class="card-value green" id="ganancias">—</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Próxima venta estimada</div>
-      <div class="card-value amber" id="proxima-venta">—</div>
-    </div>
-  </div>
-
-  <div class="estrategia">
-    <div class="estrategia-icon">🧠</div>
-    <div>
-      <div class="estrategia-label">Estrategia recomendada por IA</div>
-      <div class="estrategia-value" id="estrategia">Cargando...</div>
-    </div>
-  </div>
-
-  <div class="chart-card">
-    <div class="chart-title">Simulación — próximos 5 períodos</div>
-    <canvas id="chart-prediccion" height="120"></canvas>
-  </div>
-  <div class="chart-card" style="margin-bottom: 14px;">
-  <div class="chart-title">Historial de ventas reales</div>
-  <canvas id="chart-historial" height="120"></canvas>
+<div class="chart-card">
+  <div class="chart-title">Historial de ventas</div>
+  <canvas id="chart-historial" height="110"></canvas>
 </div>
-<div class="chart-card" style="margin-bottom: 14px;">
-  <div class="chart-title">Registrar nueva venta</div>
-  <div style="display: flex; gap: 10px; align-items: center;">
-    <input id="input-venta" type="number" placeholder="Ej: 350" style="
-      background: #111;
-      border: 0.5px solid #333;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 14px;
-      padding: 8px 14px;
-      outline: none;
-      width: 180px;
-    "/>
-    <button class="btn" onclick="registrarVenta()" style="color: #4ade80; border-color: #4ade80;">
-      + Registrar venta
-    </button>
-    <span id="msg-venta" style="font-size: 12px; color: #666;"></span>
+
+<div class="form-card">
+  <div class="chart-title">Registrar venta</div>
+  <div class="form-row">
+    <input class="input-venta" id="input-venta" type="number" placeholder="Ej: 350"/>
+    <button class="btn-register" onclick="registrarVenta()">+ Registrar</button>
+    <span class="msg-venta" id="msg-venta"></span>
   </div>
 </div>
-  <button class="btn" onclick="cargarDatos()">↻ Actualizar datos</button>
 
- <div class="footer">Conectado a https://alpha-business-intelligence.onrender.com</div>
+<button class="btn-refresh" onclick="cargarDatos()">↻ Actualizar</button>
+
+<div class="footer">Wistex AI · Business Intelligence Platform</div>
 
 <script>
+  const usuario = localStorage.getItem('usuario')
+  if (!usuario) window.location.href = 'login.html'
+
+  document.getElementById('user-name').textContent = usuario
+  document.getElementById('avatar-inicial').textContent = usuario.charAt(0).toUpperCase()
+
+  function cerrarSesion() {
+    localStorage.removeItem('usuario')
+    window.location.href = 'login.html'
+  }
+
+  function animarNumero(id, valor, decimal = false) {
+    const el = document.getElementById(id)
+    const duracion = 1200
+    const pasos = 60
+    const incremento = valor / pasos
+    let actual = 0
+    const intervalo = setInterval(() => {
+      actual += incremento
+      if (actual >= valor) { actual = valor; clearInterval(intervalo) }
+      el.textContent = decimal ? actual.toFixed(2) : Math.floor(actual).toLocaleString()
+    }, duracion / pasos)
+  }
+
   async function registrarVenta() {
-  const cantidad = document.getElementById('input-venta').value
-  const msg = document.getElementById('msg-venta')
-
-  if (!cantidad || cantidad <= 0) {
-    msg.textContent = 'Ingresa una cantidad válida'
-    msg.style.color = '#f87171'
-    return
+    const cantidad = document.getElementById('input-venta').value
+    const msg = document.getElementById('msg-venta')
+    if (!cantidad || cantidad <= 0) { msg.textContent = 'Ingresa una cantidad válida'; msg.style.color = '#f87171'; return }
+    try {
+      const res = await fetch('https://alpha-business-intelligence.onrender.com/venta', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cantidad: parseInt(cantidad) })
+      })
+      msg.textContent = '✓ Registrada'; msg.style.color = '#4ade80'
+      document.getElementById('input-venta').value = ''
+      setTimeout(() => cargarDatos(), 1000)
+    } catch (e) { msg.textContent = 'Error'; msg.style.color = '#f87171' }
   }
 
-  try {
-    const res = await fetch('https://alpha-business-intelligence.onrender.com/venta', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cantidad: parseInt(cantidad) })
-    })
-    const data = await res.json()
-    msg.textContent = '✓ Venta registrada'
-    msg.style.color = '#4ade80'
-    document.getElementById('input-venta').value = ''
-    setTimeout(() => cargarDatos(), 1000)
-  } catch (e) {
-    msg.textContent = 'Error al registrar'
-    msg.style.color = '#f87171'
+  async function cargarHistorial() {
+    try {
+      const res = await fetch('https://alpha-business-intelligence.onrender.com/historial')
+      const data = await res.json()
+      const ventas = data.ventas
+      const labels = ventas.map((_, i) => `V${i + 1}`)
+      const ctx = document.getElementById('chart-historial').getContext('2d')
+      if (window._chartHistorial) window._chartHistorial.destroy()
+      window._chartHistorial = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ data: ventas, backgroundColor: '#4ade8018', borderColor: '#4ade80', borderWidth: 1, borderRadius: 6 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333', maxTicksLimit: 10 }, grid: { color: '#111' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
+      })
+    } catch (e) { console.error(e) }
   }
-}
 
-async function cargarHistorial() {
-  try {
-    const res = await fetch('https://alpha-business-intelligence.onrender.com/historial')
-    const data = await res.json()
-    const ventas = data.ventas
-    const labels = ventas.map((_, i) => `V${i + 1}`)
-
-    const ctx = document.getElementById('chart-historial').getContext('2d')
-    if (window._chartHistorial) window._chartHistorial.destroy()
-    window._chartHistorial = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Ventas reales',
-          data: ventas,
-          backgroundColor: '#60a5fa40',
-          borderColor: '#60a5fa',
-          borderWidth: 1,
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#666', maxTicksLimit: 10 }, grid: { color: '#222' } },
-          y: { ticks: { color: '#666' }, grid: { color: '#222' } }
-        }
-      }
-    })
-  } catch (e) {
-    console.error('Error cargando historial:', e)
-  }
-}
-function animarNumero(id, valor, decimal = false) {
-  const el = document.getElementById(id)
-  const duracion = 1200
-  const pasos = 60
-  const incremento = valor / pasos
-  let actual = 0
-  const intervalo = setInterval(() => {
-    actual += incremento
-    if (actual >= valor) {
-      actual = valor
-      clearInterval(intervalo)
-    }
-    el.textContent = decimal ? actual.toFixed(2) : Math.floor(actual).toLocaleString()
-  }, duracion / pasos)
-}
-async function cargarDatos() {
+  async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([
         fetch('https://alpha-business-intelligence.onrender.com/reporte').then(r => r.json()),
         fetch('https://alpha-business-intelligence.onrender.com/prediccion').then(r => r.json()),
         fetch('https://alpha-business-intelligence.onrender.com/metricas').then(r => r.json())
       ])
-
-     animarNumero('ventas-totales', reporte.ventas_totales)
-     animarNumero('promedio', reporte.promedio, true)
-     animarNumero('ganancias', metricas.ganancias_total)
-     animarNumero('proxima-venta', prediccion.proxima_venta)
-     document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
-     document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
-
+      animarNumero('ventas-totales', reporte.ventas_totales)
+      animarNumero('promedio', reporte.promedio, true)
+      animarNumero('ganancias', metricas.ganancias_total)
+      animarNumero('proxima-venta', prediccion.proxima_venta)
+      document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
+      document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
       renderChart(prediccion.simulacion_5_periodos)
       cargarHistorial()
-    } catch (e) {
-      console.error('Error conectando a la API:', e)
-    }
+    } catch (e) { console.error(e) }
   }
 
   function renderChart(datos) {
@@ -222,40 +215,9 @@ async function cargarDatos() {
     if (window._chart) window._chart.destroy()
     window._chart = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels: ['P1', 'P2', 'P3', 'P4', 'P5'],
-        datasets: [{
-          label: 'Venta estimada',
-          data: datos,
-          borderColor: '#fbbf24',
-          backgroundColor: '#fbbf2415',
-          borderWidth: 2,
-          pointBackgroundColor: '#fbbf24',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#666' }, grid: { color: '#222' } },
-          y: { ticks: { color: '#666' }, grid: { color: '#222' } }
-        }
-      }
+      data: { labels: ['P1', 'P2', 'P3', 'P4', 'P5'], datasets: [{ data: datos, borderColor: '#4ade80', backgroundColor: '#4ade8010', borderWidth: 2, pointBackgroundColor: '#4ade80', tension: 0.4, fill: true }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333' }, grid: { color: '#111' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
     })
-  }
-
- const usuario = localStorage.getItem('usuario')
-  if (!usuario) {
-    window.location.href = 'login.html'
-  }
-
-  document.getElementById('bienvenida').textContent = `Bienvenido, ${usuario}`
-
-  function cerrarSesion() {
-    localStorage.removeItem('usuario')
-    window.location.href = 'login.html'
   }
 
   cargarDatos()
