@@ -172,6 +172,21 @@ async function cargarHistorial() {
     console.error('Error cargando historial:', e)
   }
 }
+function animarNumero(id, valor, decimal = false) {
+  const el = document.getElementById(id)
+  const duracion = 1200
+  const pasos = 60
+  const incremento = valor / pasos
+  let actual = 0
+  const intervalo = setInterval(() => {
+    actual += incremento
+    if (actual >= valor) {
+      actual = valor
+      clearInterval(intervalo)
+    }
+    el.textContent = decimal ? actual.toFixed(2) : Math.floor(actual).toLocaleString()
+  }, duracion / pasos)
+}
 async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([
@@ -180,12 +195,12 @@ async function cargarDatos() {
         fetch('https://alpha-business-intelligence.onrender.com/metricas').then(r => r.json())
       ])
 
-      document.getElementById('ventas-totales').textContent = reporte.ventas_totales.toLocaleString()
-      document.getElementById('promedio').textContent = reporte.promedio.toFixed(2)
-      document.getElementById('ganancias').textContent = metricas.ganancias_total.toLocaleString()
-      document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
-      document.getElementById('proxima-venta').textContent = prediccion.proxima_venta
-      document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
+     animarNumero('ventas-totales', reporte.ventas_totales)
+     animarNumero('promedio', reporte.promedio, true)
+     animarNumero('ganancias', metricas.ganancias_total)
+     animarNumero('proxima-venta', prediccion.proxima_venta)
+     document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
+     document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
 
       renderChart(prediccion.simulacion_5_periodos)
       cargarHistorial()
