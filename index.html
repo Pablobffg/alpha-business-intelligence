@@ -7,7 +7,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #080808; color: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
+    body { background: #080808; color: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; display: flex; min-height: 100vh; position: relative; overflow-x: hidden; }
+body::before { content: ''; position: fixed; top: -200px; left: -200px; width: 600px; height: 600px; background: radial-gradient(circle, #4ade8008 0%, transparent 70%); pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; bottom: -200px; right: -200px; width: 500px; height: 500px; background: radial-gradient(circle, #4ade8005 0%, transparent 70%); pointer-events: none; z-index: 0; }
+.sidebar, .main { position: relative; z-index: 1; }
 
     /* SIDEBAR */
     .sidebar { width: 220px; background: #0d0d0d; border-right: 0.5px solid #1a1a1a; padding: 24px 16px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
