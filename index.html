@@ -7,65 +7,108 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #080808; color: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; padding: 28px; min-height: 100vh; }
+    body { background: #080808; color: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
 
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
-    .brand { display: flex; align-items: center; gap: 14px; }
-    .brand-text h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
+    /* SIDEBAR */
+    .sidebar { width: 220px; background: #0d0d0d; border-right: 0.5px solid #1a1a1a; padding: 24px 16px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 24px; }
+    .brand-text h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
     .brand-text h1 span { color: #4ade80; }
-    .brand-text p { font-size: 11px; letter-spacing: 2.5px; color: #4ade80; opacity: 0.5; margin-top: 2px; }
-    .user-badge { display: flex; align-items: center; gap: 10px; background: #111; border: 0.5px solid #1e1e1e; border-radius: 50px; padding: 8px 16px 8px 8px; }
-    .avatar { width: 28px; height: 28px; border-radius: 50%; background: #4ade8022; border: 1px solid #4ade8044; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #4ade80; font-weight: 600; }
-    .user-name { font-size: 13px; color: #aaa; }
-    .btn-logout { background: none; border: none; color: #555; font-size: 12px; cursor: pointer; padding: 0; margin-left: 4px; }
+    .brand-text p { font-size: 9px; letter-spacing: 2px; color: #4ade80; opacity: 0.4; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; cursor: pointer; color: #555; font-size: 13px; transition: all 0.2s; border: 0.5px solid transparent; }
+    .nav-item:hover { background: #111; color: #aaa; }
+    .nav-item.active { background: #4ade8012; color: #4ade80; border-color: #4ade8025; }
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .nav-bottom { margin-top: auto; }
+    .user-section { display: flex; align-items: center; gap: 10px; padding: 12px; background: #111; border-radius: 14px; border: 0.5px solid #1a1a1a; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; background: #4ade8020; border: 1px solid #4ade8040; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #4ade80; font-weight: 600; flex-shrink: 0; }
+    .user-info { flex: 1; }
+    .user-name { font-size: 12px; color: #ccc; font-weight: 500; }
+    .user-role { font-size: 10px; color: #444; }
+    .btn-logout { background: none; border: none; color: #333; cursor: pointer; font-size: 14px; padding: 2px; }
     .btn-logout:hover { color: #f87171; }
 
+    /* MAIN */
+    .main { flex: 1; padding: 28px; overflow-y: auto; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-title { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .page-subtitle { font-size: 13px; color: #444; margin-bottom: 28px; }
+
+    /* CARDS */
     .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-    .card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; transition: border 0.2s; }
-    .card:hover { border-color: #2a2a2a; }
-    .card-label { font-size: 12px; color: #555; margin-bottom: 12px; letter-spacing: 0.3px; }
-    .card-value { font-size: 28px; font-weight: 600; letter-spacing: -1px; color: #fff; }
+    .card { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 20px; transition: border 0.2s; }
+    .card:hover { border-color: #222; }
+    .card-label { font-size: 11px; color: #444; margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .card-value { font-size: 26px; font-weight: 600; letter-spacing: -1px; color: #fff; }
     .card-value.green { color: #4ade80; }
     .card-value.amber { color: #fbbf24; }
     .card-value.blue { color: #60a5fa; }
-    .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 8px; background: #1a1a1a; color: #555; border: 0.5px solid #222; }
+    .badge { display: inline-block; font-size: 10px; padding: 3px 10px; border-radius: 20px; margin-top: 8px; background: #151515; color: #444; border: 0.5px solid #1e1e1e; }
 
-    .strategy-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-    .strategy-icon { width: 44px; height: 44px; border-radius: 14px; background: #4ade8012; border: 0.5px solid #4ade8030; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .strategy-label { font-size: 11px; color: #555; letter-spacing: 0.5px; text-transform: uppercase; }
-    .strategy-value { font-size: 16px; font-weight: 500; color: #4ade80; margin-top: 3px; letter-spacing: -0.3px; }
+    /* STRATEGY */
+    .strategy-card { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 18px 22px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .strategy-icon { width: 42px; height: 42px; border-radius: 12px; background: #4ade8010; border: 0.5px solid #4ade8025; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .strategy-label { font-size: 10px; color: #444; letter-spacing: 0.5px; text-transform: uppercase; }
+    .strategy-value { font-size: 15px; font-weight: 500; color: #4ade80; margin-top: 3px; }
 
-    .chart-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; margin-bottom: 16px; }
-    .chart-title { font-size: 12px; color: #555; margin-bottom: 18px; letter-spacing: 0.5px; text-transform: uppercase; }
+    /* CHARTS */
+    .chart-card { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+    .chart-title { font-size: 11px; color: #444; margin-bottom: 16px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 
-    .form-card { background: #111; border: 0.5px solid #1e1e1e; border-radius: 20px; padding: 22px; margin-bottom: 16px; }
-    .form-row { display: flex; gap: 10px; align-items: center; }
-    .input-venta { background: #0a0a0a; border: 0.5px solid #222; border-radius: 12px; color: #fff; font-size: 14px; padding: 10px 16px; outline: none; width: 160px; font-family: inherit; transition: border 0.2s; }
-    .input-venta:focus { border-color: #4ade80; }
-    .btn-register { background: #4ade8015; color: #4ade80; border: 0.5px solid #4ade8040; border-radius: 12px; font-size: 13px; padding: 10px 18px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-    .btn-register:hover { background: #4ade8025; }
-    .msg-venta { font-size: 12px; color: #555; }
+    /* FORM */
+    .form-card { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+    .form-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+    .input-field { background: #0a0a0a; border: 0.5px solid #222; border-radius: 10px; color: #fff; font-size: 13px; padding: 10px 14px; outline: none; font-family: inherit; transition: border 0.2s; }
+    .input-field:focus { border-color: #4ade80; }
+    .btn-green { background: #4ade8015; color: #4ade80; border: 0.5px solid #4ade8035; border-radius: 10px; font-size: 13px; padding: 10px 16px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-green:hover { background: #4ade8025; }
+    .btn-gray { background: #111; border: 0.5px solid #1e1e1e; border-radius: 10px; color: #555; font-size: 13px; padding: 10px 16px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-gray:hover { background: #1a1a1a; color: #fff; }
 
-    .btn-refresh { background: #111; border: 0.5px solid #1e1e1e; border-radius: 12px; color: #555; font-size: 13px; padding: 10px 18px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-    .btn-refresh:hover { background: #1a1a1a; color: #fff; }
+    /* TABLE */
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { font-size: 11px; color: #444; text-align: left; padding: 10px 14px; border-bottom: 0.5px solid #1a1a1a; letter-spacing: 0.5px; text-transform: uppercase; }
+    .table td { font-size: 13px; color: #aaa; padding: 12px 14px; border-bottom: 0.5px solid #111; }
+    .table tr:last-child td { border-bottom: none; }
+    .table tr:hover td { color: #fff; }
 
-    .footer { font-size: 11px; color: #2a2a2a; margin-top: 28px; text-align: center; letter-spacing: 0.5px; }
+    /* REPORT */
+    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .report-card { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 20px; }
+    .report-label { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .report-value { font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.5px; }
+    .report-sub { font-size: 12px; color: #444; margin-top: 4px; }
+    .tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #4ade8012; color: #4ade80; border: 0.5px solid #4ade8025; }
+
+    /* CONFIG */
+    .config-section { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 24px; margin-bottom: 16px; }
+    .config-title { font-size: 13px; font-weight: 500; color: #ccc; margin-bottom: 16px; }
+    .config-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #151515; }
+    .config-row:last-child { border-bottom: none; }
+    .config-key { font-size: 13px; color: #555; }
+    .config-val { font-size: 13px; color: #aaa; }
+
+    .footer { font-size: 11px; color: #222; margin-top: 28px; text-align: center; }
 
     @media (max-width: 768px) {
-      body { padding: 16px; }
+      .sidebar { width: 60px; padding: 16px 8px; }
+      .brand-text, .nav-item span, .user-info, .btn-logout { display: none; }
+      .nav-item { justify-content: center; padding: 12px; }
+      .main { padding: 16px; }
       .grid { grid-template-columns: 1fr 1fr; }
-      .header { flex-direction: column; gap: 16px; }
-    }
-    @media (max-width: 480px) {
-      .grid { grid-template-columns: 1fr; }
+      .chart-grid { grid-template-columns: 1fr; }
+      .report-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<div class="header">
+<!-- SIDEBAR -->
+<div class="sidebar">
   <div class="brand">
-    <svg width="44" height="44" viewBox="0 0 52 52">
+    <svg width="32" height="32" viewBox="0 0 52 52">
       <rect x="0" y="0" width="52" height="52" rx="14" fill="#0f0f0f" stroke="#4ade80" stroke-width="1.5"/>
       <rect x="10" y="22" width="6" height="20" rx="3" fill="#4ade80" opacity="0.5"/>
       <rect x="20" y="14" width="6" height="28" rx="3" fill="#4ade80"/>
@@ -78,79 +121,220 @@
       <p>BUSINESS INTELLIGENCE</p>
     </div>
   </div>
-  <div class="user-badge">
-    <div class="avatar" id="avatar-inicial">W</div>
-    <span class="user-name" id="user-name">Cargando...</span>
-    <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+
+  <div class="nav-item active" onclick="setPage('dashboard')">
+    <span class="nav-icon">📊</span>
+    <span>Dashboard</span>
+  </div>
+  <div class="nav-item" onclick="setPage('ventas')">
+    <span class="nav-icon">💰</span>
+    <span>Ventas</span>
+  </div>
+  <div class="nav-item" onclick="setPage('reportes')">
+    <span class="nav-icon">📈</span>
+    <span>Reportes</span>
+  </div>
+  <div class="nav-item" onclick="setPage('configuracion')">
+    <span class="nav-icon">⚙️</span>
+    <span>Configuración</span>
+  </div>
+
+  <div class="nav-bottom">
+    <div class="user-section">
+      <div class="avatar" id="avatar-inicial">W</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">Usuario</div>
+        <div class="user-role">Admin</div>
+      </div>
+      <button class="btn-logout" onclick="cerrarSesion()" title="Salir">✕</button>
+    </div>
   </div>
 </div>
 
-<div class="grid">
-  <div class="card">
-    <div class="card-label">Ventas totales</div>
-    <div class="card-value green" id="ventas-totales">—</div>
-    <div class="badge" id="registros">— registros</div>
+<!-- MAIN -->
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-title">Dashboard</div>
+    <div class="page-subtitle">Resumen general en tiempo real</div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-label">Ventas totales</div>
+        <div class="card-value green" id="ventas-totales">—</div>
+        <div class="badge" id="registros">—</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Promedio por venta</div>
+        <div class="card-value blue" id="promedio">—</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Ganancias totales</div>
+        <div class="card-value green" id="ganancias">—</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Próxima estimada</div>
+        <div class="card-value amber" id="proxima-venta">—</div>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-icon">🧠</div>
+      <div>
+        <div class="strategy-label">Estrategia recomendada por IA</div>
+        <div class="strategy-value" id="estrategia">Analizando...</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Simulación — próximos 5 períodos</div>
+        <canvas id="chart-prediccion" height="160"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Historial de ventas</div>
+        <canvas id="chart-historial" height="160"></canvas>
+      </div>
+    </div>
+
+    <button class="btn-gray" onclick="cargarDatos()">↻ Actualizar</button>
+    <div class="footer">Wistex AI · Business Intelligence Platform</div>
   </div>
-  <div class="card">
-    <div class="card-label">Promedio por venta</div>
-    <div class="card-value blue" id="promedio">—</div>
+
+  <!-- VENTAS -->
+  <div class="page" id="page-ventas">
+    <div class="page-title">Ventas</div>
+    <div class="page-subtitle">Registra y consulta tus ventas</div>
+
+    <div class="form-card">
+      <div class="chart-title">Registrar nueva venta</div>
+      <div class="form-row">
+        <input class="input-field" id="input-venta" type="number" placeholder="Cantidad (ej: 350)" style="width:180px"/>
+        <button class="btn-green" onclick="registrarVenta()">+ Registrar</button>
+        <span id="msg-venta" style="font-size:12px; color:#555;"></span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Historial completo</div>
+      <canvas id="chart-historial-ventas" height="140"></canvas>
+    </div>
+
+    <div class="form-card">
+      <div class="chart-title">Últimas ventas</div>
+      <table class="table">
+        <thead>
+          <tr><th>#</th><th>Venta</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="tabla-ventas"></tbody>
+      </table>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-label">Ganancias totales</div>
-    <div class="card-value green" id="ganancias">—</div>
+
+  <!-- REPORTES -->
+  <div class="page" id="page-reportes">
+    <div class="page-title">Reportes</div>
+    <div class="page-subtitle">Análisis ejecutivo del negocio</div>
+
+    <div class="report-grid">
+      <div class="report-card">
+        <div class="report-label">Total acumulado</div>
+        <div class="report-value green" id="rep-total">—</div>
+        <div class="report-sub">Suma de todas las ventas</div>
+      </div>
+      <div class="report-card">
+        <div class="report-label">Promedio general</div>
+        <div class="report-value blue" id="rep-promedio">—</div>
+        <div class="report-sub">Por período</div>
+      </div>
+      <div class="report-card">
+        <div class="report-label">Ganancias estimadas</div>
+        <div class="report-value green" id="rep-ganancias">—</div>
+        <div class="report-sub">Basado en historial</div>
+      </div>
+      <div class="report-card">
+        <div class="report-label">Estrategia activa</div>
+        <div class="report-value" style="font-size:16px;" id="rep-estrategia">—</div>
+        <div class="report-sub"><span class="tag">IA recomendada</span></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Proyección futura</div>
+      <canvas id="chart-reporte" height="140"></canvas>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-label">Próxima venta estimada</div>
-    <div class="card-value amber" id="proxima-venta">—</div>
+
+  <!-- CONFIGURACION -->
+  <div class="page" id="page-configuracion">
+    <div class="page-title">Configuración</div>
+    <div class="page-subtitle">Información de tu cuenta</div>
+
+    <div class="config-section">
+      <div class="config-title">Perfil</div>
+      <div class="config-row">
+        <span class="config-key">Usuario</span>
+        <span class="config-val" id="cfg-usuario">—</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Rol</span>
+        <span class="config-val">Administrador</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Plan</span>
+        <span class="config-val"><span class="tag">Pro</span></span>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <div class="config-title">Sistema</div>
+      <div class="config-row">
+        <span class="config-key">Versión</span>
+        <span class="config-val">Wistex AI v1.0</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">API</span>
+        <span class="config-val" style="color:#4ade80;">● Operativa</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Última actualización</span>
+        <span class="config-val" id="cfg-fecha">—</span>
+      </div>
+    </div>
+
+    <button class="btn-gray" onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
+
 </div>
-
-<div class="strategy-card">
-  <div class="strategy-icon">🧠</div>
-  <div>
-    <div class="strategy-label">Estrategia recomendada por IA</div>
-    <div class="strategy-value" id="estrategia">Analizando...</div>
-  </div>
-</div>
-
-<div class="chart-card">
-  <div class="chart-title">Simulación — próximos 5 períodos</div>
-  <canvas id="chart-prediccion" height="110"></canvas>
-</div>
-
-<div class="chart-card">
-  <div class="chart-title">Historial de ventas</div>
-  <canvas id="chart-historial" height="110"></canvas>
-</div>
-
-<div class="form-card">
-  <div class="chart-title">Registrar venta</div>
-  <div class="form-row">
-    <input class="input-venta" id="input-venta" type="number" placeholder="Ej: 350"/>
-    <button class="btn-register" onclick="registrarVenta()">+ Registrar</button>
-    <span class="msg-venta" id="msg-venta"></span>
-  </div>
-</div>
-
-<button class="btn-refresh" onclick="cargarDatos()">↻ Actualizar</button>
-
-<div class="footer">Wistex AI · Business Intelligence Platform</div>
 
 <script>
+  const API = 'https://alpha-business-intelligence.onrender.com'
   const usuario = localStorage.getItem('usuario')
   if (!usuario) window.location.href = 'login.html'
 
   document.getElementById('user-name').textContent = usuario
   document.getElementById('avatar-inicial').textContent = usuario.charAt(0).toUpperCase()
+  document.getElementById('cfg-usuario').textContent = usuario
+  document.getElementById('cfg-fecha').textContent = new Date().toLocaleDateString('es-PA')
 
   function cerrarSesion() {
     localStorage.removeItem('usuario')
     window.location.href = 'login.html'
   }
 
+  function setPage(nombre) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+    document.getElementById('page-' + nombre).classList.add('active')
+    event.currentTarget.classList.add('active')
+    if (nombre === 'ventas') cargarVentas()
+    if (nombre === 'reportes') cargarReportes()
+  }
+
   function animarNumero(id, valor, decimal = false) {
     const el = document.getElementById(id)
-    const duracion = 1200
+    if (!el) return
     const pasos = 60
     const incremento = valor / pasos
     let actual = 0
@@ -158,36 +342,57 @@
       actual += incremento
       if (actual >= valor) { actual = valor; clearInterval(intervalo) }
       el.textContent = decimal ? actual.toFixed(2) : Math.floor(actual).toLocaleString()
-    }, duracion / pasos)
+    }, 1200 / pasos)
   }
 
   async function registrarVenta() {
     const cantidad = document.getElementById('input-venta').value
     const msg = document.getElementById('msg-venta')
-    if (!cantidad || cantidad <= 0) { msg.textContent = 'Ingresa una cantidad válida'; msg.style.color = '#f87171'; return }
+    if (!cantidad || cantidad <= 0) { msg.textContent = 'Cantidad inválida'; msg.style.color = '#f87171'; return }
     try {
-      const res = await fetch('https://alpha-business-intelligence.onrender.com/venta', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cantidad: parseInt(cantidad) })
-      })
+      await fetch(`${API}/venta`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cantidad: parseInt(cantidad) }) })
       msg.textContent = '✓ Registrada'; msg.style.color = '#4ade80'
       document.getElementById('input-venta').value = ''
-      setTimeout(() => cargarDatos(), 1000)
+      setTimeout(() => { cargarDatos(); cargarVentas() }, 1000)
     } catch (e) { msg.textContent = 'Error'; msg.style.color = '#f87171' }
   }
 
-  async function cargarHistorial() {
+  async function cargarVentas() {
     try {
-      const res = await fetch('https://alpha-business-intelligence.onrender.com/historial')
+      const res = await fetch(`${API}/historial`)
       const data = await res.json()
       const ventas = data.ventas
       const labels = ventas.map((_, i) => `V${i + 1}`)
-      const ctx = document.getElementById('chart-historial').getContext('2d')
-      if (window._chartHistorial) window._chartHistorial.destroy()
-      window._chartHistorial = new Chart(ctx, {
+      const ctx = document.getElementById('chart-historial-ventas').getContext('2d')
+      if (window._chartVentas) window._chartVentas.destroy()
+      window._chartVentas = new Chart(ctx, {
         type: 'bar',
         data: { labels, datasets: [{ data: ventas, backgroundColor: '#4ade8018', borderColor: '#4ade80', borderWidth: 1, borderRadius: 6 }] },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333', maxTicksLimit: 10 }, grid: { color: '#111' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333', maxTicksLimit: 12 }, grid: { color: '#0f0f0f' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
+      })
+      const tbody = document.getElementById('tabla-ventas')
+      const ultimas = ventas.slice(-8).reverse()
+      tbody.innerHTML = ultimas.map((v, i) => `<tr><td>${ventas.length - i}</td><td>${v.toLocaleString()}</td><td><span class="tag">registrada</span></td></tr>`).join('')
+    } catch (e) { console.error(e) }
+  }
+
+  async function cargarReportes() {
+    try {
+      const [reporte, prediccion, metricas] = await Promise.all([
+        fetch(`${API}/reporte`).then(r => r.json()),
+        fetch(`${API}/prediccion`).then(r => r.json()),
+        fetch(`${API}/metricas`).then(r => r.json())
+      ])
+      document.getElementById('rep-total').textContent = reporte.ventas_totales.toLocaleString()
+      document.getElementById('rep-promedio').textContent = reporte.promedio.toFixed(2)
+      document.getElementById('rep-ganancias').textContent = metricas.ganancias_total.toLocaleString()
+      document.getElementById('rep-estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
+      const ctx = document.getElementById('chart-reporte').getContext('2d')
+      if (window._chartReporte) window._chartReporte.destroy()
+      window._chartReporte = new Chart(ctx, {
+        type: 'line',
+        data: { labels: ['P1', 'P2', 'P3', 'P4', 'P5'], datasets: [{ data: prediccion.simulacion_5_periodos, borderColor: '#60a5fa', backgroundColor: '#60a5fa10', borderWidth: 2, pointBackgroundColor: '#60a5fa', tension: 0.4, fill: true }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333' }, grid: { color: '#0f0f0f' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
       })
     } catch (e) { console.error(e) }
   }
@@ -195,9 +400,9 @@
   async function cargarDatos() {
     try {
       const [reporte, prediccion, metricas] = await Promise.all([
-        fetch('https://alpha-business-intelligence.onrender.com/reporte').then(r => r.json()),
-        fetch('https://alpha-business-intelligence.onrender.com/prediccion').then(r => r.json()),
-        fetch('https://alpha-business-intelligence.onrender.com/metricas').then(r => r.json())
+        fetch(`${API}/reporte`).then(r => r.json()),
+        fetch(`${API}/prediccion`).then(r => r.json()),
+        fetch(`${API}/metricas`).then(r => r.json())
       ])
       animarNumero('ventas-totales', reporte.ventas_totales)
       animarNumero('promedio', reporte.promedio, true)
@@ -205,19 +410,24 @@
       animarNumero('proxima-venta', prediccion.proxima_venta)
       document.getElementById('registros').textContent = metricas.cantidad_registros + ' registros'
       document.getElementById('estrategia').textContent = reporte.estrategia.replaceAll('_', ' ')
-      renderChart(prediccion.simulacion_5_periodos)
-      cargarHistorial()
+      const ctx = document.getElementById('chart-prediccion').getContext('2d')
+      if (window._chart) window._chart.destroy()
+      window._chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: ['P1', 'P2', 'P3', 'P4', 'P5'], datasets: [{ data: prediccion.simulacion_5_periodos, borderColor: '#4ade80', backgroundColor: '#4ade8010', borderWidth: 2, pointBackgroundColor: '#4ade80', tension: 0.4, fill: true }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333' }, grid: { color: '#0f0f0f' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
+      })
+      const res = await fetch(`${API}/historial`)
+      const data = await res.json()
+      const ventas = data.ventas
+      const ctx2 = document.getElementById('chart-historial').getContext('2d')
+      if (window._chartH) window._chartH.destroy()
+      window._chartH = new Chart(ctx2, {
+        type: 'bar',
+        data: { labels: ventas.map((_, i) => `V${i + 1}`), datasets: [{ data: ventas, backgroundColor: '#4ade8018', borderColor: '#4ade80', borderWidth: 1, borderRadius: 6 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333', maxTicksLimit: 10 }, grid: { color: '#0f0f0f' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
+      })
     } catch (e) { console.error(e) }
-  }
-
-  function renderChart(datos) {
-    const ctx = document.getElementById('chart-prediccion').getContext('2d')
-    if (window._chart) window._chart.destroy()
-    window._chart = new Chart(ctx, {
-      type: 'line',
-      data: { labels: ['P1', 'P2', 'P3', 'P4', 'P5'], datasets: [{ data: datos, borderColor: '#4ade80', backgroundColor: '#4ade8010', borderWidth: 2, pointBackgroundColor: '#4ade80', tension: 0.4, fill: true }] },
-      options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333' }, grid: { color: '#111' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
-    })
   }
 
   cargarDatos()
