@@ -235,15 +235,23 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
     </div>
 
     <div class="form-card">
-      <div class="chart-title">Últimas ventas</div>
-      <table class="table">
-        <thead>
-          <tr><th>#</th><th>Venta</th><th>Estado</th></tr>
-        </thead>
-        <tbody id="tabla-ventas"></tbody>
-      </table>
-    </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <div class="chart-title" style="margin-bottom:0;">Registro de ventas</div>
+    <span id="tabla-resumen" style="font-size:11px; color:#444;"></span>
   </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cantidad</th>
+        <th>vs Promedio</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-ventas"></tbody>
+  </table>
+</div>
+</div>
 
   <!-- REPORTES -->
   <div class="page" id="page-reportes">
@@ -384,8 +392,22 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#333', maxTicksLimit: 12 }, grid: { color: '#0f0f0f' } }, y: { ticks: { color: '#333' }, grid: { color: '#151515' } } } }
       })
       const tbody = document.getElementById('tabla-ventas')
-      const ultimas = ventas.slice(-8).reverse()
-      tbody.innerHTML = ultimas.map((v, i) => `<tr><td>${ventas.length - i}</td><td>${v.toLocaleString()}</td><td><span class="tag">registrada</span></td></tr>`).join('')
+const promedio = data.ventas.reduce((a,b) => a+b, 0) / data.ventas.length
+const ultimas = ventas.slice(-15).reverse()
+document.getElementById('tabla-resumen').textContent = `Mostrando últimas ${ultimas.length} de ${ventas.length} ventas`
+tbody.innerHTML = ultimas.map((v, i) => {
+  const diff = v - promedio
+  const diffText = diff >= 0 ? `+${diff.toFixed(0)}` : diff.toFixed(0)
+  const diffColor = diff >= 0 ? '#4ade80' : '#f87171'
+  const estado = v >= promedio * 1.1 ? '↑ Alta' : v <= promedio * 0.9 ? '↓ Baja' : '→ Normal'
+  const estadoColor = v >= promedio * 1.1 ? '#4ade80' : v <= promedio * 0.9 ? '#f87171' : '#fbbf24'
+  return `<tr>
+    <td style="color:#555;">${ventas.length - i}</td>
+    <td style="color:#fff; font-weight:500;">${v.toLocaleString()}</td>
+    <td style="color:${diffColor}; font-weight:500;">${diffText}</td>
+    <td><span style="font-size:11px; color:${estadoColor};">${estado}</span></td>
+  </tr>`
+}).join('')
     } catch (e) { console.error(e) }
   }
 
