@@ -149,5 +149,31 @@ def historial_filtrado():
         "promedio": round(sum(ventas)/len(ventas), 2) if ventas else 0,
         "total_registros": len(ventas)
     })
+@app.route("/alertas", methods=["GET"])
+def alertas():
+    datos = cargar_datos()
+    ventas = datos["ventas"]
+    promedio = datos["promedio"]
+    alertas = []
+
+    ultima = ventas[-1] if ventas else 0
+    anterior = ventas[-2] if len(ventas) > 1 else ultima
+
+    if ultima < promedio * 0.8:
+        alertas.append({"tipo": "roja", "mensaje": f"Venta reciente ({ultima}) muy por debajo del promedio ({round(promedio)})", "icono": "🔴"})
+
+    if ultima == anterior and len(ventas) > 5:
+        iguales = all(v == ventas[-1] for v in ventas[-5:])
+        if iguales:
+            alertas.append({"tipo": "amarilla", "mensaje": "Ventas estancadas en los últimos 5 períodos", "icono": "🟡"})
+
+    caida = ((anterior - ultima) / anterior * 100) if anterior > 0 else 0
+    if caida > 15:
+        alertas.append({"tipo": "roja", "mensaje": f"Caída del {round(caida)}% respecto al período anterior", "icono": "🔴"})
+
+    if not alertas:
+        alertas.append({"tipo": "verde", "mensaje": "Todas las métricas dentro del rango normal", "icono": "🟢"})
+
+    return jsonify({"alertas": alertas})
 if __name__ == "__main__":
     app.run(debug=True)

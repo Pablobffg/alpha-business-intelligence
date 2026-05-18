@@ -211,6 +211,11 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
       </div>
     </div>
 
+    <div class="form-card" id="alertas-container" style="margin-bottom:16px;">
+      <div class="chart-title">Alertas del sistema</div>
+      <div id="lista-alertas" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+
     <button class="btn-gray" onclick="cargarDatos()">↻ Actualizar</button>
     <div class="footer">Wistex AI · Business Intelligence Platform</div>
   </div>
@@ -375,6 +380,18 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
       msg.textContent = '✓ Registrada'; msg.style.color = '#4ade80'
       document.getElementById('input-venta').value = ''
       setTimeout(() => { cargarDatos(); cargarVentas() }, 1000)
+      const resAlertas = await fetch(`${API}/alertas`)
+const dataAlertas = await resAlertas.json()
+const lista = document.getElementById('lista-alertas')
+lista.innerHTML = dataAlertas.alertas.map(a => {
+  const color = a.tipo === 'roja' ? '#f87171' : a.tipo === 'amarilla' ? '#fbbf24' : '#4ade80'
+  const bg = a.tipo === 'roja' ? '#f8717110' : a.tipo === 'amarilla' ? '#fbbf2410' : '#4ade8010'
+  const border = a.tipo === 'roja' ? '#f8717130' : a.tipo === 'amarilla' ? '#fbbf2430' : '#4ade8030'
+  return `<div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:${bg}; border:0.5px solid ${border}; border-radius:12px;">
+    <span style="font-size:16px;">${a.icono}</span>
+    <span style="font-size:13px; color:${color};">${a.mensaje}</span>
+  </div>`
+}).join('')
     } catch (e) { msg.textContent = 'Error'; msg.style.color = '#f87171' }
   }
 
