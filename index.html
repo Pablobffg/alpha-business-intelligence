@@ -84,7 +84,7 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
     .report-value { font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.5px; }
     .report-sub { font-size: 12px; color: #444; margin-top: 4px; }
     .tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #4ade8012; color: #4ade80; border: 0.5px solid #4ade8025; }
-
+    
     /* CONFIG */
     .config-section { background: #111; border: 0.5px solid #1a1a1a; border-radius: 18px; padding: 24px; margin-bottom: 16px; }
     .config-title { font-size: 13px; font-weight: 500; color: #ccc; margin-bottom: 16px; }
@@ -380,18 +380,6 @@ body::after { content: ''; position: fixed; bottom: -100px; right: -100px; width
       msg.textContent = '✓ Registrada'; msg.style.color = '#4ade80'
       document.getElementById('input-venta').value = ''
       setTimeout(() => { cargarDatos(); cargarVentas() }, 1000)
-      const resAlertas = await fetch(`${API}/alertas`)
-const dataAlertas = await resAlertas.json()
-const lista = document.getElementById('lista-alertas')
-lista.innerHTML = dataAlertas.alertas.map(a => {
-  const color = a.tipo === 'roja' ? '#f87171' : a.tipo === 'amarilla' ? '#fbbf24' : '#4ade80'
-  const bg = a.tipo === 'roja' ? '#f8717110' : a.tipo === 'amarilla' ? '#fbbf2410' : '#4ade8010'
-  const border = a.tipo === 'roja' ? '#f8717130' : a.tipo === 'amarilla' ? '#fbbf2430' : '#4ade8030'
-  return `<div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:${bg}; border:0.5px solid ${border}; border-radius:12px;">
-    <span style="font-size:16px;">${a.icono}</span>
-    <span style="font-size:13px; color:${color};">${a.mensaje}</span>
-  </div>`
-}).join('')
     } catch (e) { msg.textContent = 'Error'; msg.style.color = '#f87171' }
   }
 
@@ -424,6 +412,18 @@ tbody.innerHTML = ultimas.map((v, i) => {
     <td style="color:${diffColor}; font-weight:500;">${diffText}</td>
     <td><span style="font-size:11px; color:${estadoColor};">${estado}</span></td>
   </tr>`
+}).join('')
+const resAlertas = await fetch(`${API}/alertas`)
+const dataAlertas = await resAlertas.json()
+const lista = document.getElementById('lista-alertas')
+lista.innerHTML = dataAlertas.alertas.map(a => {
+  const color = a.tipo === 'roja' ? '#f87171' : a.tipo === 'amarilla' ? '#fbbf24' : '#4ade80'
+  const bg = a.tipo === 'roja' ? '#f8717110' : a.tipo === 'amarilla' ? '#fbbf2410' : '#4ade8010'
+  const border = a.tipo === 'roja' ? '#f8717130' : a.tipo === 'amarilla' ? '#fbbf2430' : '#4ade8030'
+  return `<div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:${bg}; border:0.5px solid ${border}; border-radius:12px;">
+    <span style="font-size:16px;">${a.icono}</span>
+    <span style="font-size:13px; color:${color};">${a.mensaje}</span>
+  </div>`
 }).join('')
     } catch (e) { console.error(e) }
   }
